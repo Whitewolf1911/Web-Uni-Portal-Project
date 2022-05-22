@@ -14,6 +14,7 @@ app.set("view engine", "ejs");
 app.use(cookieParser());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
+app.use(express.static("GazozUniversitesi"));
 
 const fifteenMinutes = 1000 * 60 * 15;
 app.use(
@@ -48,7 +49,7 @@ const User = new mongoose.model("User", userSchema);
 ////////////////----GET REQUESTS----///////////////
 
 app.get("/", function (req, res) {
-  res.render("home");
+  res.render("GazozUniversitesi/index");
 });
 
 app.get("/login", function (req, res) {
@@ -58,6 +59,28 @@ app.get("/login", function (req, res) {
 app.get("/register", function (req, res) {
   if (req.session.mySession === "adminSession") {
     res.render("register");
+  } else {
+    res.redirect("/");
+  }
+});
+const myStudentArray = [];
+
+app.get("/showAllStu", function (req, res) {
+
+  if (req.session.mySession === "adminSession") {
+    User.find({ isAdmin: false }, function (err, foundUsers) {
+      foundUsers.forEach((element) => {
+        var myObj = {
+          isim: element.firstName,
+          soyad: element.lastName,
+          bolum: element.departmant,
+        };
+
+        myStudentArray.push(myObj);
+      });
+    });
+    res.render("showAllStu", { startingContent: myStudentArray });
+    
   } else {
     res.redirect("/");
   }
@@ -78,14 +101,30 @@ app.get("/studentPanel", function (req, res) {
   }
 });
 app.get("/gradeInfo", function (req, res) {
-  res.render("gradeInfo");
+  if (req.session.mySession === "stuSession") {
+    res.render("gradeInfo");
+  } else {
+    res.redirect("/");
+  }
 });
 app.get("/stuInfo", function (req, res) {
-  res.render("stuInfo");
+  if (req.session.mySession === "stuSession") {
+    res.render("stuInfo");
+  } else {
+    res.redirect("/");
+  }
 });
 app.get("/logout", function (req, res) {
   req.session.destroy();
   res.redirect("/");
+});
+
+app.get("/GazozUniversitesi/:x/:y", function (req, res) {
+  res.render("GazozUniversitesi/" + req.params.x + "/" + req.params.y);
+});
+
+app.get("/GazozUniversitesi/:x", function (req, res) {
+  res.render("GazozUniversitesi/" + req.params.x);
 });
 
 ////////////////----POST REQUESTS----///////////////
@@ -118,11 +157,11 @@ app.post("/login", function (req, res) {
             res.render("studentPanel");
           }
         } else {
-          res.send("Wrong password");
+          res.redirect("/GazozUniversitesi/Aksis");
         }
       } else {
         console.log(err);
-        res.send("no user found");
+        res.redirect("/GazozUniversitesi/Aksis");
       }
     }
   );

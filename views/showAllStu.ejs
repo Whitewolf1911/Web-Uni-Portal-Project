@@ -1,0 +1,18 @@
+<%- include('partials/header') %>
+<%- include('partials/adminPanelHeader') %>
+
+
+
+  <% startingContent.forEach(element => {  %>
+
+            <h2> <%=element.isim %>  </h2>
+            <h2>  <%=element.soyad %>   </h2>
+            <h2>  <%=element.bolum %>   </h2>
+   <%});   %>   
+
+
+
+
+
+
+<%- include('partials/footer') %>
