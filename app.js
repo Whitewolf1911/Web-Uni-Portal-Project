@@ -63,24 +63,16 @@ app.get("/register", function (req, res) {
     res.redirect("/");
   }
 });
-const myStudentArray = [];
 
 app.get("/showAllStu", function (req, res) {
-
   if (req.session.mySession === "adminSession") {
     User.find({ isAdmin: false }, function (err, foundUsers) {
-      foundUsers.forEach((element) => {
-        var myObj = {
-          isim: element.firstName,
-          soyad: element.lastName,
-          bolum: element.departmant,
-        };
-
-        myStudentArray.push(myObj);
-      });
+      if (err) {
+        console.log(err);
+      } else {
+        res.render("showAllStu", { startingContent: foundUsers });
+      }
     });
-    res.render("showAllStu", { startingContent: myStudentArray });
-    
   } else {
     res.redirect("/");
   }

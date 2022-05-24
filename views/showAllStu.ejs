@@ -3,12 +3,29 @@
 
 
 
-  <% startingContent.forEach(element => {  %>
 
-            <h2> <%=element.isim %>  </h2>
-            <h2>  <%=element.soyad %>   </h2>
-            <h2>  <%=element.bolum %>   </h2>
-   <%});   %>   
+
+
+<table>
+  
+  <tr>
+    <th>İsim</th>
+    <th>Soyisim</th>
+    <th>Bölüm</th>
+  </tr>
+
+  <% startingContent.forEach(element => {  %>
+<tr>
+
+    <td> <%=element.firstName %>  </td>
+    <td>  <%=element.lastName %>   </td>
+    <td>  <%=element.departmant %>   </td>
+</tr>
+
+<%});   %>   
+
+</table>
+
 
 
 
