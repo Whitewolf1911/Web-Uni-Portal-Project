@@ -1,3 +1,18 @@
 table, th, td {
     border: 1px solid black;
+
   }
+
+  th, td {
+    padding: 15px;
+  }
+
+  #footer {
+    position:fixed;
+    left:0px;
+    bottom:0px;
+    height:90px;
+    width:100%;
+    background:#999;
+ }
+ 

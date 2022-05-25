@@ -4,8 +4,26 @@
 <%- include('partials/stuPanelHeader') %>
 
 
+<h1 style="margin:3%;"> Öğrenci Not Dökümü </h1>
 
-<br><br><br>
-<h1 style="margin-left:10%;"> not bilgileri </h1>
+
+    <table style="margin: 4% ;">
+        <tr>
+            <th style="color:red;">Ders Adı</th>
+            <th style="color:red;">Not</th>
+        </tr>
+        <% stuGrades.forEach(grade => { %>
+            
+           
+            <tr> 
+                <th> <%=grade.lessonName%> </th>
+                <th> <%=grade.grade%></th>
+            </tr>    
+
+        
+
+      <%  }); %> 
+    </table>
+
 
 <%- include('partials/footer') %>

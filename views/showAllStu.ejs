@@ -1,14 +1,10 @@
 <%- include('partials/header') %>
 <%- include('partials/adminPanelHeader') %>
 
-
-
-
-
-
-<table>
+<table style="margin: 2%;">
   
   <tr>
+    <th>Öğrenci Numarası</th>
     <th>İsim</th>
     <th>Soyisim</th>
     <th>Bölüm</th>
@@ -16,7 +12,7 @@
 
   <% startingContent.forEach(element => {  %>
 <tr>
-
+    <td> <%=element.username %>  </td>
     <td> <%=element.firstName %>  </td>
     <td>  <%=element.lastName %>   </td>
     <td>  <%=element.departmant %>   </td>
@@ -25,11 +21,5 @@
 <%});   %>   
 
 </table>
-
-
-
-
-
-
 
 <%- include('partials/footer') %>

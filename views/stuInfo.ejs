@@ -3,8 +3,33 @@
 <%- include('partials/header') %>
 <%- include('partials/stuPanelHeader') %>
 
+<br /><br /><br />
+<h1 style="margin-left: 10%">Özlük bilgileri</h1>
 
-<br><br><br>
-<h1 style="margin-left:10%;"> Özlük bilgileri</h1>
+<table style="margin-left: 200px; margin-top:100px ;">
+  <tr>
+    <td>
+      <h2>Öğrenci Numarası : <%=studentInfo.username%></h2>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <h2>Öğrencinin Adı : <%=studentInfo.firstName%></h2>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <h2>Öğrencinin Soyadı : <%=studentInfo.lastName%></h2>
+    </td>
+  </tr>
+
+  <tr>
+    <td>
+      <h2>Öğrencinin Bölümü : <%=studentInfo.departmant%></h2>
+    </td>
+  </tr>
+</table>
 
 <%- include('partials/footer') %>

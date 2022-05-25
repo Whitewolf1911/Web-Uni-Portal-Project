@@ -1,0 +1,56 @@
+<%- include('partials/header') %> <%- include('partials/adminPanelHeader') %>
+
+<div class="container mt-5">
+  <h1>Öğrenci Notu Ekleme</h1>
+
+  <div class="row">
+    <div class="col-sm-8">
+      <div class="card">
+        <div class="card-body">
+          <!-- Makes POST request to /register route -->
+          <form action="/addGradeInfo" method="POST">
+            <label>Öğrenci Seçiniz &nbsp;</label>
+            <select name="ddOgrenciSec" id="ddOgrenciSec">
+              <% allStudents.forEach(student => { %>
+              <option value="<%=student.username%>">
+                <%=student.firstName%> <%=student.lastName%> -
+                <%=student.username%> - 
+                <%=student.departmant%>
+              </option>
+            <%  }); %>
+              
+            </select>
+
+            <br /><br />
+
+            <label>Ders Seçiniz &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+            <select name="ddDersSec" id="ddDersSec">
+              <option value="Calculus 1">Calculus 1</option>
+              <option value="Introduction To Algorithm" selected="selected">
+                Introduction To Algorithm
+              </option>
+              <option value="Mobil Programlama">Mobil Programlama</option>
+              <option value="Ağ Programlama">Ağ Programlama</option>
+              <option value="Sistem Programlama">Sistem Programlama</option>
+              <option value="Kriptografi">Kriptografi</option>
+            </select>
+            <br><br>
+            <div class="form-group">
+              <label for="grade">Not</label>
+              <input type="number" 
+              min="0"
+              max="100"
+              onKeyUp="if(this.value>99){this.value='100';}else if(this.value<0){this.value='0';}"
+              class="form-control" name="grade" />
+            </div>
+            <br /><br />
+
+            <button type="submit" class="btn btn-dark">Ekle</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<%- include('partials/footer') %>

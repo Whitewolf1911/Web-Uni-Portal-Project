@@ -19,12 +19,15 @@ app.use(express.static("GazozUniversitesi"));
 const fifteenMinutes = 1000 * 60 * 15;
 app.use(
   session({
-    secret: "mylittlesecretforsecret",
+    secret: process.env.SECRET,
     resave: false,
     cookie: { maxAge: fifteenMinutes },
     saveUninitialized: false,
   })
 );
+
+// Variable for getting student info from db
+var stuID = "";
 
 mongoose.connect("mongodb://localhost:27017/universityDB");
 
@@ -44,7 +47,7 @@ const userSchema = new mongoose.Schema({
 });
 
 const Lesson = new mongoose.model("Lesson", lessonSchema);
-const User = new mongoose.model("User", userSchema);
+const User = mongoose.model("User", userSchema);
 
 ////////////////----GET REQUESTS----///////////////
 
@@ -85,6 +88,21 @@ app.get("/adminPanel", function (req, res) {
     res.redirect("/");
   }
 });
+
+app.get("/addGradeInfo", function (req, res) {
+  if (req.session.mySession === "adminSession") {
+    User.find({ isAdmin: false }, function (err, foundUsers) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.render("addGradeInfo", { allStudents: foundUsers });
+      }
+    });
+  } else {
+    res.redirect("/");
+  }
+});
+
 app.get("/studentPanel", function (req, res) {
   if (req.session.mySession === "stuSession") {
     res.render("studentPanel");
@@ -94,25 +112,48 @@ app.get("/studentPanel", function (req, res) {
 });
 app.get("/gradeInfo", function (req, res) {
   if (req.session.mySession === "stuSession") {
-    res.render("gradeInfo");
+    User.findOne({ username: stuID }, function (err, foundStudent) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.render("gradeInfo", { stuGrades: foundStudent.grades });
+      }
+    });
   } else {
     res.redirect("/");
   }
 });
 app.get("/stuInfo", function (req, res) {
   if (req.session.mySession === "stuSession") {
-    res.render("stuInfo");
+    User.findOne({ username: stuID }, function (err, foundStudent) {
+      if (err) {
+        console.log(err);
+      } else {
+        res.render("stuInfo", { studentInfo: foundStudent });
+      }
+    });
   } else {
     res.redirect("/");
   }
 });
 app.get("/logout", function (req, res) {
+  stuID = "";
   req.session.destroy();
   res.redirect("/");
 });
 
 app.get("/GazozUniversitesi/:x/:y", function (req, res) {
   res.render("GazozUniversitesi/" + req.params.x + "/" + req.params.y);
+});
+app.get("/GazozUniversitesi/:x/:y/:z", function (req, res) {
+  res.render(
+    "GazozUniversitesi/" +
+      req.params.x +
+      "/" +
+      req.params.y +
+      "/" +
+      req.params.z
+  );
 });
 
 app.get("/GazozUniversitesi/:x", function (req, res) {
@@ -121,16 +162,18 @@ app.get("/GazozUniversitesi/:x", function (req, res) {
 
 ////////////////----POST REQUESTS----///////////////
 app.post("/register", function (req, res) {
-  const newStudent = new User({
-    username: req.body.username,
-    password: req.body.password,
-    firstName: req.body.fName,
-    lastName: req.body.lName,
-    isAdmin: false,
-    departmant: req.body.ddBolumSec,
-  });
-  newStudent.save();
-  res.redirect("/register");
+  if (req.session.mySession === "adminSession") {
+    const newStudent = new User({
+      username: req.body.username,
+      password: req.body.password,
+      firstName: req.body.fName,
+      lastName: req.body.lName,
+      isAdmin: false,
+      departmant: req.body.ddBolumSec,
+    });
+    newStudent.save();
+    res.redirect("/register");
+  }
 });
 
 app.post("/login", function (req, res) {
@@ -146,6 +189,8 @@ app.post("/login", function (req, res) {
             res.render("adminPanel");
           } else {
             req.session.mySession = "stuSession";
+            stuID = foundUser.username;
+            console.log(stuID);
             res.render("studentPanel");
           }
         } else {
@@ -157,6 +202,31 @@ app.post("/login", function (req, res) {
       }
     }
   );
+});
+
+app.post("/addGradeInfo", function (req, res) {
+  if (req.session.mySession === "adminSession") {
+    const newGrade = new Lesson({
+      lessonName: req.body.ddDersSec,
+      grade: req.body.grade,
+    });
+    newGrade.save(function () {});
+
+    User.findOneAndUpdate(
+      { username: req.body.ddOgrenciSec },
+      { $push: { grades: newGrade } },
+      function (err) {
+        if (err) {
+          console.log(err);
+        } else {
+          res.render("success");
+        }
+      }
+    );
+  } else {
+    //unauthorized
+    res.redirect("/");
+  }
 });
 
 /////----//////////
